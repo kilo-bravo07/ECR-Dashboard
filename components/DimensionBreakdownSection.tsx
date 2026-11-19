@@ -34,7 +34,7 @@ export function DimensionBreakdownSection({ dimension, dimensionLabel, ecrKind, 
       rows={state.data.rows}
       ecrKind={ecrKind}
       unit={unit}
-      comparisonLabel={comparisonLabelFor(filterState.comparisonMode)}
+      comparisonLabel={comparisonLabelFor(filterState.comparisonMode, filterState.comparisonRange)}
       sortByDeterioration={sortByDeterioration}
       limit={limit}
       dimensionLabel={dimensionLabel}

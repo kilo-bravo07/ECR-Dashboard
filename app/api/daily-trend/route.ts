@@ -3,7 +3,7 @@ import { getDataProvider } from "@/lib/data-providers";
 import { getProperty } from "@/lib/properties";
 import { cached } from "@/lib/cache";
 import { getComparisonRange } from "@/lib/date-utils";
-import { parseQuery, parseComparisonMode, handleApiError } from "@/lib/api-utils";
+import { parseQuery, parseComparisonMode, parseCustomComparisonRange, handleApiError } from "@/lib/api-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
     const query = parseQuery(req.nextUrl.searchParams);
     const property = getProperty(query.property);
     const comparisonMode = parseComparisonMode(req.nextUrl.searchParams);
+    const customComparisonRange = parseCustomComparisonRange(req.nextUrl.searchParams);
     const provider = getDataProvider(property);
     const filterKey = JSON.stringify(query.filters);
     const cacheKeyBase = `trend:${property.key}:${provider.mode}`;
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
       provider.getDailyTrend(property, query),
     );
 
-    const comparisonRange = getComparisonRange(query.range, comparisonMode);
+    const comparisonRange = getComparisonRange(query.range, comparisonMode, customComparisonRange);
     const comparisonPoints = comparisonRange
       ? await cached(`${cacheKeyBase}:${comparisonRange.start}:${comparisonRange.end}:${filterKey}`, () =>
           provider.getDailyTrend(property, { property: property.key, range: comparisonRange, filters: query.filters }),

@@ -9,7 +9,7 @@
 
 export type PropertyKey = "floweraura-web" | "floweraura-app" | "bakingo-web" | "bakingo-app";
 
-export type FilterKey = "ga4City" | "country" | "device" | "trafficSource" | "trafficMedium";
+export type FilterKey = "ga4City" | "country" | "device" | "trafficSource" | "trafficMedium" | "platform";
 
 /** One stage in a funnel. Its rate = count[key] / count[previous stage's key] (or the funnel's root for the first stage). */
 export interface FunnelStageConfig {
@@ -106,4 +106,5 @@ export const FILTER_LABELS: Record<FilterKey, string> = {
   device: "Device",
   trafficSource: "Traffic Source",
   trafficMedium: "Traffic Medium",
+  platform: "Platform",
 };

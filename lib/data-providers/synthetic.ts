@@ -30,6 +30,9 @@ export interface Combo {
   trafficMedium: string;
   sourceMediumMult: number;
   sourceMediumShare: number;
+  platform: string;
+  platformMult: number;
+  platformShare: number;
 }
 
 const COUNTRY_CITY = [
@@ -50,6 +53,11 @@ const DEVICE = [
   { device: "tablet", share: 0.1, mult: 1.0 },
 ];
 
+const PLATFORM = [
+  { platform: "ANDROID", share: 0.62, mult: 0.97 },
+  { platform: "IOS", share: 0.38, mult: 1.06 },
+];
+
 const SOURCE_MEDIUM = [
   { trafficSource: "google", trafficMedium: "organic", share: 0.35, mult: 1.05 },
   { trafficSource: "google", trafficMedium: "cpc", share: 0.25, mult: 0.95 },
@@ -67,19 +75,24 @@ export function buildCombos(): Combo[] {
   for (const cc of COUNTRY_CITY) {
     for (const d of DEVICE) {
       for (const sm of SOURCE_MEDIUM) {
-        combos.push({
-          country: cc.country,
-          ga4City: cc.ga4City,
-          countryCityMult: cc.mult,
-          countryCityShare: cc.share,
-          device: d.device,
-          deviceMult: d.mult,
-          deviceShare: d.share,
-          trafficSource: sm.trafficSource,
-          trafficMedium: sm.trafficMedium,
-          sourceMediumMult: sm.mult,
-          sourceMediumShare: sm.share,
-        });
+        for (const p of PLATFORM) {
+          combos.push({
+            country: cc.country,
+            ga4City: cc.ga4City,
+            countryCityMult: cc.mult,
+            countryCityShare: cc.share,
+            device: d.device,
+            deviceMult: d.mult,
+            deviceShare: d.share,
+            trafficSource: sm.trafficSource,
+            trafficMedium: sm.trafficMedium,
+            sourceMediumMult: sm.mult,
+            sourceMediumShare: sm.share,
+            platform: p.platform,
+            platformMult: p.mult,
+            platformShare: p.share,
+          });
+        }
       }
     }
   }
@@ -93,6 +106,7 @@ export function comboMatchesFilters(combo: Combo, filters: DimensionFilters): bo
   if (filters.device?.length && !filters.device.includes(combo.device)) return false;
   if (filters.trafficSource?.length && !filters.trafficSource.includes(combo.trafficSource)) return false;
   if (filters.trafficMedium?.length && !filters.trafficMedium.includes(combo.trafficMedium)) return false;
+  if (filters.platform?.length && !filters.platform.includes(combo.platform)) return false;
   return true;
 }
 
@@ -165,8 +179,8 @@ function comboDipMultiplier(property: PropertyConfig, combo: Combo, iso: string)
 /** Computes one dimension-combo's raw counts for one property on one date — both shopping and checkout funnels, plus any extra metrics. */
 export function comboCounts(property: PropertyConfig, combo: Combo, iso: string): RawCounts {
   const profile = property.mockProfile;
-  const shareMult = combo.countryCityShare * combo.deviceShare * combo.sourceMediumShare;
-  const rateMult = combo.countryCityMult * combo.deviceMult * combo.sourceMediumMult;
+  const shareMult = combo.countryCityShare * combo.deviceShare * combo.sourceMediumShare * combo.platformShare;
+  const rateMult = combo.countryCityMult * combo.deviceMult * combo.sourceMediumMult * combo.platformMult;
   const dipMult = comboDipMultiplier(property, combo, iso);
 
   const counts: RawCounts = {};

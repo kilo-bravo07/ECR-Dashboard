@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getProperty, isPropertyKey } from "./properties";
 import type { PropertyConfig } from "./properties/types";
-import type { ComparisonMode, DashboardQuery, DimensionFilters } from "./types";
+import type { ComparisonMode, DashboardQuery, DateRange, DimensionFilters } from "./types";
 
 function listParam(params: URLSearchParams, key: string): string[] | undefined {
   const raw = params.get(key);
@@ -17,6 +17,7 @@ export function parseFilters(params: URLSearchParams): DimensionFilters {
     ga4City: listParam(params, "ga4City"),
     trafficSource: listParam(params, "trafficSource"),
     trafficMedium: listParam(params, "trafficMedium"),
+    platform: listParam(params, "platform"),
   };
 }
 
@@ -40,8 +41,15 @@ export function parseQuery(params: URLSearchParams): DashboardQuery {
 
 export function parseComparisonMode(params: URLSearchParams): ComparisonMode {
   const raw = params.get("comparison");
-  if (raw === "d7" || raw === "d365" || raw === "none") return raw;
+  if (raw === "d7" || raw === "d365" || raw === "none" || raw === "custom") return raw;
   return "d7";
+}
+
+export function parseCustomComparisonRange(params: URLSearchParams): DateRange | undefined {
+  const cstart = params.get("cstart");
+  const cend = params.get("cend");
+  if (!cstart || !cend) return undefined;
+  return { start: cstart, end: cend };
 }
 
 export class ApiError extends Error {

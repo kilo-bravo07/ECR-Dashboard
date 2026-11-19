@@ -14,12 +14,24 @@ import type { ComparisonMode } from "@/lib/types";
 const COMPARISON_OPTIONS: { value: ComparisonMode; label: string }[] = [
   { value: "d7", label: "vs D-7" },
   { value: "d365", label: "vs D-365 (YoY)" },
+  { value: "custom", label: "Custom dates" },
   { value: "none", label: "No comparison" },
 ];
 
 export function FilterBar() {
-  const { property: propertyKey, range, filters, comparisonMode, setProperty, setRange, setComparisonMode, setFilterValues, resetFilters } =
-    useDashboardFilters();
+  const {
+    property: propertyKey,
+    range,
+    filters,
+    comparisonMode,
+    comparisonRange,
+    setProperty,
+    setRange,
+    setComparisonMode,
+    setComparisonRange,
+    setFilterValues,
+    resetFilters,
+  } = useDashboardFilters();
   const property = getProperty(propertyKey);
   const { unit, setUnit } = useChangeUnit();
   const optionsState = useApiData<FilterOptionsResponse>(`/api/filter-options?property=${propertyKey}`);
@@ -87,6 +99,38 @@ export function FilterBar() {
           </option>
         ))}
       </select>
+
+      {comparisonMode === "custom" && (
+        <div className="flex items-center gap-1.5">
+          <label className="text-xs text-ink-500">Compare</label>
+          <input
+            type="date"
+            value={comparisonRange?.start ?? ""}
+            max={today()}
+            onChange={(e) =>
+              setComparisonRange({
+                start: e.target.value,
+                end: comparisonRange?.end ?? e.target.value,
+              })
+            }
+            className="rounded border border-ink-100 px-2 py-1 text-xs"
+          />
+          <label className="text-xs text-ink-500">to</label>
+          <input
+            type="date"
+            value={comparisonRange?.end ?? ""}
+            max={today()}
+            min={comparisonRange?.start}
+            onChange={(e) =>
+              setComparisonRange({
+                start: comparisonRange?.start ?? e.target.value,
+                end: e.target.value,
+              })
+            }
+            className="rounded border border-ink-100 px-2 py-1 text-xs"
+          />
+        </div>
+      )}
 
       <div className="h-5 w-px bg-ink-100" />
 

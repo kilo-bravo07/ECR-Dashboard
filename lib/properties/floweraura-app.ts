@@ -61,7 +61,7 @@ export const FLOWERAURA_APP: PropertyConfig = {
     },
   ],
   extraMetrics: [{ key: "activeUsers", label: "Active Users", ga4EventName: null }],
-  availableFilters: ["country", "device", "trafficSource", "trafficMedium"],
+  availableFilters: ["country", "device", "trafficSource", "trafficMedium", "platform"],
 
   mockProfile: {
     baseRootVolume: 1935,

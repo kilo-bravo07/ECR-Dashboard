@@ -44,6 +44,11 @@ export function useDashboardFilters() {
     [push, state],
   );
 
+  const setComparisonRange = useCallback(
+    (comparisonRange: DateRange) => push({ ...state, comparisonRange }),
+    [push, state],
+  );
+
   const setFilterValues = useCallback(
     (key: keyof DimensionFilters, values: string[]) =>
       push({ ...state, filters: { ...state.filters, [key]: values.length ? values : undefined } }),
@@ -52,5 +57,5 @@ export function useDashboardFilters() {
 
   const resetFilters = useCallback(() => push({ ...state, filters: {} }), [push, state]);
 
-  return { ...state, setProperty, setRange, setComparisonMode, setFilterValues, resetFilters };
+  return { ...state, setProperty, setRange, setComparisonMode, setComparisonRange, setFilterValues, resetFilters };
 }

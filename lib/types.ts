@@ -18,7 +18,7 @@ export interface DateRange {
   end: string; // ISO yyyy-mm-dd, inclusive
 }
 
-export type ComparisonMode = "d7" | "d365" | "none";
+export type ComparisonMode = "d7" | "d365" | "none" | "custom";
 
 export type DimensionFilters = Partial<Record<FilterKey, string[]>>;
 
@@ -29,7 +29,7 @@ export interface DashboardQuery {
 }
 
 /** Breakdown dimensions "Where did ECR drop?" can group by — a subset of FilterKey (trafficSource+trafficMedium are combined into one breakdown column). */
-export type BreakdownDimension = "ga4City" | "country" | "device" | "trafficSourceMedium";
+export type BreakdownDimension = "ga4City" | "country" | "device" | "trafficSourceMedium" | "platform";
 
 /** Direction/severity vocabulary shared by every "highlight the drop" surface. */
 export type ChangeSeverity = "MAJOR_DROP" | "DROP" | "STABLE" | "IMPROVED";

@@ -32,12 +32,14 @@ export function isSingleDay(range: DateRange): boolean {
  * Single day (spec section 5):
  *   D-7:   current date shifted back 7 days
  *   D-365: current date shifted back 365 days
+ *   custom: use the caller-supplied customRange directly
  *
  * Date range: shift both endpoints back by the same number of days
  * (7 for D-7, 365 for D-365), preserving range length.
  */
-export function getComparisonRange(range: DateRange, mode: ComparisonMode): DateRange | null {
+export function getComparisonRange(range: DateRange, mode: ComparisonMode, customRange?: DateRange): DateRange | null {
   if (mode === "none") return null;
+  if (mode === "custom") return customRange ?? null;
   const shift = mode === "d7" ? 7 : 365;
   return {
     start: addDays(range.start, -shift),
@@ -45,12 +47,14 @@ export function getComparisonRange(range: DateRange, mode: ComparisonMode): Date
   };
 }
 
-export function comparisonLabel(mode: ComparisonMode): string {
+export function comparisonLabel(mode: ComparisonMode, customRange?: DateRange): string {
   switch (mode) {
     case "d7":
       return "D-7";
     case "d365":
       return "D-365 (YoY)";
+    case "custom":
+      return customRange ? `${customRange.start} – ${customRange.end}` : "Custom";
     default:
       return "No comparison";
   }

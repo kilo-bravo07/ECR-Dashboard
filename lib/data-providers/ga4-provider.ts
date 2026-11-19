@@ -200,6 +200,8 @@ function ga4OutputDimensionName(dimension: BreakdownDimension): string[] {
       return ["deviceCategory"];
     case "trafficSourceMedium":
       return ["sessionSource", "sessionMedium"];
+    case "platform":
+      return ["platform"];
   }
 }
 

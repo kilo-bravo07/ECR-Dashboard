@@ -47,6 +47,8 @@ function dimensionValue(combo: Combo, dimension: BreakdownDimension): string {
       return combo.device;
     case "trafficSourceMedium":
       return `${combo.trafficSource} / ${combo.trafficMedium}`;
+    case "platform":
+      return combo.platform;
   }
 }
 

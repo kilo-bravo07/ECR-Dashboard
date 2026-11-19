@@ -59,6 +59,7 @@ export const BREAKDOWN_DIMENSIONS = [
   { key: "country", label: "Country" },
   { key: "device", label: "Device" },
   { key: "trafficSourceMedium", label: "Source / Medium" },
+  { key: "platform", label: "Platform" },
 ] as const;
 
 /**
