@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { parseFilterState, serializeFilterState, type FilterState } from "@/lib/query-state";
+import { addDays } from "@/lib/date-utils";
 import type { PropertyKey } from "@/lib/properties/types";
 import type { ComparisonMode, DateRange, DimensionFilters } from "@/lib/types";
 
@@ -40,7 +41,18 @@ export function useDashboardFilters() {
   const setRange = useCallback((range: DateRange) => push({ ...state, range }), [push, state]);
 
   const setComparisonMode = useCallback(
-    (comparisonMode: ComparisonMode) => push({ ...state, comparisonMode }),
+    (comparisonMode: ComparisonMode) => {
+      const next: FilterState = { ...state, comparisonMode };
+      // When switching to custom, immediately write default cstart/cend into
+      // the URL so the date pickers are never blank on first open.
+      if (comparisonMode === "custom" && !next.comparisonRange) {
+        next.comparisonRange = {
+          start: addDays(state.range.start, -7),
+          end: addDays(state.range.end, -7),
+        };
+      }
+      push(next);
+    },
     [push, state],
   );
 
